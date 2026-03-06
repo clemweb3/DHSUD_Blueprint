@@ -473,7 +473,7 @@ export default function DHSUDBlueprint() {
         <div style={{ position: "absolute", bottom: -40, left: 80, width: 180, height: 180, borderRadius: "50%", background: `${C.gold}10` }} />
         <div style={{ position: "absolute", top: 30, right: 120, width: 100, height: 100, borderRadius: "50%", background: `${C.teal}15` }} />
 
-        <div style={{ maxWidth: 940, margin: "0 auto", padding: "40px 24px 0" }}>
+        <div style={{ maxWidth: 1400, margin: "0 auto", padding: "40px 24px 0" }}>
           {/* DHSUD Logo Row */}
           <div style={{ display: "flex", alignItems: "center", gap: 18, marginBottom: 28 }}>
             {/* Logo mark */}
@@ -534,9 +534,8 @@ export default function DHSUDBlueprint() {
             ))}
           </div>
         </div>
-
         {/* Nav Tabs */}
-        <div style={{ maxWidth: 940, margin: "0 auto", padding: "20px 24px 0", display: "flex", gap: 4, overflowX: "auto" }}>
+        <div style={{ maxWidth: 1400, margin: "0 auto", padding: "20px 24px 0", display: "flex", gap: 4, overflowX: "auto" }}>
           {TABS.map((t, i) => (
             <button key={i} onClick={() => setTab(i)} style={{
               padding: "10px 18px", borderRadius: "10px 10px 0 0", border: "none", cursor: "pointer",
