@@ -3,5 +3,5 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: '/DHSUD_Blueprint/', 
+  base: '/Housing-Sector-Blueprint-2026-2028/', 
 })

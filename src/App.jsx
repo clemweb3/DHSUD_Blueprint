@@ -1343,15 +1343,6 @@ export default function DHSUDBlueprint() {
           </>
         )}
       </div>
-
-      {/* FOOTER */}
-      <div style={{ background: C.navy, color: "#7AABBF", textAlign: "center", padding: "20px 24px", fontSize: 12 }}>
-        <div style={{ fontWeight: 700, color: C.white, marginBottom: 4 }}>Housing Sector Blueprint for 2026-2028 · Department of Human Settlements and Urban Development</div>
-        <div>Republic of the Philippines · March 2026</div>
-        <div style={{ marginTop: 6, fontSize: 11, color: "#5A8FAA" }}>
-          Data sources: PSA 2024 Census · BSP RPPI Q3 2025 · DHSUD FY 2026 Budget Briefer · UP CIDS August 2025 · Provident Fund 2025 Annual Report · DBM · Colliers PH · InvestAsian
-        </div>
-      </div>
     </div>
   );
 }
