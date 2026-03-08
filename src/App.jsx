@@ -673,15 +673,15 @@ export default function DHSUDBlueprint() {
         <div style={{ position: "absolute", top: 30, right: 120, width: 100, height: 100, borderRadius: "50%", background: `${C.teal}15` }} />
 
         <div style={{ maxWidth: 940, margin: "0 auto", padding: "40px 24px 0" }}>
-  <div style={{ borderLeft: `5px solid ${C.gold}`, paddingLeft: 20, marginBottom: 20 }}>
-    <h1 style={{ margin: 0, fontFamily: "'Playfair Display', Georgia, serif", fontSize: 38, color: C.white, fontWeight: 800, lineHeight: 1.15 }}>
-      Housing Sector Blueprint<br />for 2026-2028
-    </h1>
-    <p style={{ margin: "10px 0 0", fontSize: 13, color: "#85B4D9", fontWeight: 600, letterSpacing: 1, textTransform: "uppercase" }}>
-      March 2026
-    </p>
-  </div>
-</div>
+          {/* Main title only */}
+          <div style={{ borderLeft: `5px solid ${C.gold}`, paddingLeft: 20, marginBottom: 20 }}>
+            <h1 style={{ margin: 0, fontFamily: "'Playfair Display', Georgia, serif", fontSize: 38, color: C.white, fontWeight: 800, lineHeight: 1.15 }}>
+              Housing Sector Blueprint<br />for 2026-2028
+            </h1>
+            <p style={{ margin: "10px 0 0", fontSize: 13, color: "#85B4D9", fontWeight: 600, letterSpacing: 1, textTransform: "uppercase" }}>
+              March 2026
+            </p>
+          </div>
 
           {/* Key numbers strip */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 1, background: `${C.white}15`, borderRadius: 12, overflow: "hidden", marginBottom: 0 }}>
@@ -971,7 +971,7 @@ export default function DHSUDBlueprint() {
                       {financingMix.map((e, i) => <Cell key={i} fill={e.color} />)}
                     </Pie>
                   </PieChart>
-                  <div style={{ fontSize: 11, color: C.muted, marginTop: -8 }}>₱250–300B Total (2026-28)</div>
+                  <div style={{ fontSize: 11, color: C.muted, marginTop: -8 }}>₱250–300B Total (202628)</div>
                 </div>
                 <div>
                   {[
