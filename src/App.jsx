@@ -29,21 +29,22 @@ const C = {
 
 // ─── CHART DATA ───────────────────────────────────────────────────────────────
 const affordabilityData = [
-  { label: "D1 ₱8K", affordable: 2400, required: 4824, income: 8000 },
-  { label: "D2 ₱12K", affordable: 3582, required: 4824, income: 11940 },
-  { label: "D3 ₱17K", affordable: 5211, required: 4824, income: 17369 },
-  { label: "D4 ₱21K", affordable: 6300, required: 4824, income: 21000 },
-  { label: "D5 ₱26K", affordable: 7800, required: 4824, income: 26000 },
-  { label: "D6 ₱33K", affordable: 9900, required: 4824, income: 33000 },
-  { label: "D7 ₱43K", affordable: 12900, required: 4824, income: 43000 },
-  { label: "D8 ₱58K", affordable: 17400, required: 4824, income: 58000 },
-  { label: "D9 ₱85K", affordable: 25500, required: 4824, income: 85000 },
+  { label: "D1 ₱11.9K", affordable: 3582, required: 4824, income: 11940 },
+  { label: "D2 ₱13.7K", affordable: 4097, required: 4824, income: 13655 },
+  { label: "D3 ₱15.7K", affordable: 4705, required: 4824, income: 15684 },
+  { label: "D4 ₱17.4K", affordable: 5211, required: 4824, income: 17369 },
+  { label: "D5 ₱22.6K", affordable: 6780, required: 4824, income: 22600 },
+  { label: "D6 ₱28.8K", affordable: 8630, required: 4824, income: 28765 },
+  { label: "D7 ₱34.6K", affordable: 10380, required: 4824, income: 34600 },
+  { label: "D8 ₱48.1K", affordable: 14436, required: 4824, income: 48120 },
+  { label: "D9 ₱80K", affordable: 24000, required: 4824, income: 80000 },
   { label: "D10 ₱200K", affordable: 60000, required: 4824, income: 200000 },
 ];
 
 const housingPrices = [
-  { name: "Socialized Ceiling", price: 1800000, fill: C.teal },
-  { name: "Median (Nationwide)", price: 3460000, fill: C.midBlue },
+  { name: "Socialized Horiz. (₱950K)", price: 950000, fill: C.teal },
+  { name: "Socialized Vert. (₱1.8M)", price: 1800000, fill: C.green },
+  { name: "National Median House", price: 2950000, fill: C.midBlue },
   { name: "Metro Manila Condo", price: 3460000, fill: C.lightBlue },
   { name: "Metro Manila House", price: 7360000, fill: C.red },
 ];
@@ -90,11 +91,11 @@ const capitalByYear = [
 ];
 
 const unitsTarget = [
-  { year: "Now (4PH)", units: 7500, fill: C.gray },
+  { year: "Current", units: 7500, fill: C.gray },
   { year: "2026", units: 10000, fill: C.lightBlue },
-  { year: "2027", units: 17500, fill: C.midBlue },
+  { year: "2027", units: 22000, fill: C.midBlue },
   { year: "2028", units: 25000, fill: C.blue },
-  { year: "2029-30 Goal", units: 45000, fill: C.gold },
+  { year: "2029–30 Goal", units: 45000, fill: C.gold },
 ];
 
 const regionalData = [
@@ -175,100 +176,298 @@ const Source = ({ text }) => (
   <p style={{ fontSize: 10.5, color: C.muted, fontStyle: "italic", marginTop: 12 }}>Source: {text}</p>
 );
 
-// ─── TOWNSHIP ILLUSTRATION ────────────────────────────────────────────────────
+// ─── TOWNSHIP ILLUSTRATION — Full City Plan Map ───────────────────────────────
 const TownshipIllustration = () => {
-  const [hovered, setHovered] = useState(null);
+  const [activeZone, setActiveZone] = useState(null);
 
-  const zones = [
-    { id: "residential", emoji: "🏘️", label: "Residential", sub: "500–5,000 Units", angle: 0, r: 0, color: C.navy, isCenter: true },
-    { id: "education", emoji: "🎓", label: "Education", sub: "10-min walk", angle: -80, r: 115, color: C.teal },
-    { id: "health", emoji: "🏥", label: "Healthcare", sub: "10-min walk", angle: 0, r: 120, color: C.green },
-    { id: "commercial", emoji: "🏪", label: "Market & Shops", sub: "5-min walk", angle: 80, r: 115, color: C.gold },
-    { id: "employment", emoji: "🏭", label: "Employment", sub: "15-min walk", angle: 160, r: 130, color: C.lightBlue },
-    { id: "transport", emoji: "🚊", label: "Transport Hub", sub: "5-min walk", angle: 235, r: 115, color: C.red },
-    { id: "park", emoji: "🌳", label: "Green Spaces", sub: "2-min walk", angle: 300, r: 105, color: C.green },
-  ];
-
-  const info = {
-    residential: "500 to 5,000 housing units in mid-rise buildings (4–6 floors). Mix of sizes for different family types. Green spaces and playgrounds included.",
-    education: "Elementary school mandatory for townships over 1,000 units. High school for 3,000+ units. Day care and TESDA vocational training centers.",
-    health: "Barangay health station minimum. Rural Health Unit for larger townships. Pharmacy, mental health and social services on-site.",
-    commercial: "Public market, grocery stores, banks and remittance centers, post office, government service centers, restaurants and eateries.",
-    employment: "Light industrial zones, BPO centers, commercial areas. Minimum 1,000 jobs within 30 minutes of township required before approval.",
-    transport: "Priority: Within 2km of train stations (Metro Manila Subway, NSCR, LRT, MRT). Internal bike lanes and community shuttles.",
-    park: "Parks, playgrounds, community gardens. Reduces urban heat and promotes physical wellness of residents.",
+  const zoneInfo = {
+    residential: {
+      color: C.navy, label: "Residential Zone", icon: "🏘️",
+      desc: "Mid-rise housing (4–6 floors), 500–5,000 units total. Mix of unit sizes for all family types. Homeowners' association mandatory from Day 1. 50-year usufractuary agreements: families own the house structure, government permanently retains the land — anti-speculation rules prevent flipping.",
+    },
+    education: {
+      color: C.teal, label: "Education Zone", icon: "🎓",
+      desc: "Elementary school within 10-min walk (mandatory for 1,000+ unit townships). Senior High School with TVL tracks aligned to the specific industries in the Employment Zone (3,000+ units). TESDA-accredited centre in commercial/employment zone. ALS delivery point in the Community Centre for adult residents. TVL–industry alignment certified jointly by DTI and DepEd before township approval.",
+    },
+    employment: {
+      color: "#2369A8", label: "Employment Zone", icon: "🏭",
+      desc: "Light manufacturing, BPO, cooperatives. DTI Shared Service Facility (SSF) node pre-installed before certificate of occupancy. Mandatory: minimum 1,000 jobs within 30 minutes by public transport — a required approval condition, not a target. Industrial specialisation determined at planning stage with DTI and LGU: garment corridor, electronics, agro-processing, or BPO, depending on regional context.",
+    },
+    commercial: {
+      color: "#B8860B", label: "Market & Commerce", icon: "🏪",
+      desc: "Public market, grocery, banks, remittance centres — all within 5-minute walking radius. Negosyo Center (RA 10644) co-located in commercial area. DTI Sari-Sari Store Diversification Program upgrades neighbourhood retailers to include financial services and digital payments from Day 1. BMBE Act (RA 9178) tax exemptions encourage formalisation of micro-enterprises.",
+    },
+    health: {
+      color: "#1A7A4A", label: "Health & Wellness", icon: "🏥",
+      desc: "Barangay Health Station operational from Day 1 with min. 1 trained BHW per 20 households (RA 7883). Rural Health Unit with full clinical services for townships of 2,000+ units. PhilHealth enrollment assistance for all qualifying households at turnover. School-Based Feeding Program activated in the township elementary school from its first academic year. Mental health and psychosocial support referral pathway — critical for families transitioning from informal settlements.",
+    },
+    transport: {
+      color: C.red, label: "Transport Hub", icon: "🚊",
+      desc: "Priority location: within 2km of rail station (MRT, LRT, Metro Manila Subway, NSCR) or major highway with regular bus service. Internal bike lanes and community shuttles. Target: combined housing + transport costs below 45% of family income. Poor families currently spend 15–20% of income on transportation — proximity is affordability.",
+    },
+    park: {
+      color: "#0D9060", label: "Green Spaces & Parks", icon: "🌳",
+      desc: "Parks and playgrounds within 5-minute walk from every home. Permeable paving, stormwater management systems, rooftop gardens reduce urban heat island effect. Community gardens preserve cultural agricultural practices and provide food security. Green space is both a mandatory resilience feature and a condition of township approval.",
+    },
+    center: {
+      color: C.midBlue, label: "Community Center", icon: "🏛️",
+      desc: "Multi-use hub for: cultural activities (heritage dimension — preserving kinship networks and community identity), ALS delivery for adult residents lacking formal credentials, DOLE Kabuhayan Program and DSWD SLP pre-deployed before occupancy, barangay health functions, cooperative governance. The heritage dimension requires that communities are not merely housed — they are culturally sustained.",
+    },
   };
 
+  const toggle = (zone) => setActiveZone(activeZone === zone ? null : zone);
+  const alpha = (zone, a) => {
+    if (!activeZone) return a;
+    return activeZone === zone ? "FF" : "44";
+  };
+  const zfill = (zone, baseAlpha = "EE") => `${zoneInfo[zone].color}${alpha(zone, baseAlpha)}`;
+
+  // Small building footprints helper: fills a block with tiny building rects
+  const bldgs = (x, y, w, h, cols, rows) => {
+    const pw = (w - (cols + 1) * 3) / cols;
+    const ph = (h - (rows + 1) * 3) / rows;
+    return Array.from({ length: cols * rows }, (_, i) => {
+      const c = i % cols, r = Math.floor(i / cols);
+      return { x: x + 3 + c * (pw + 3), y: y + 3 + r * (ph + 3), w: pw, h: ph };
+    });
+  };
+
+  const CX = 354, CY = 258; // map center
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 20 }}>
-      {/* SVG Map */}
-      <svg width="440" height="440" viewBox="0 0 440 440" style={{ overflow: "visible" }}>
-        {/* Radius rings */}
-        {[170, 125, 80].map((r, i) => (
-          <circle key={i} cx={220} cy={220} r={r}
-            fill={["#EDF5FF", "#D8ECFF", "#C2E0FF"][i]}
-            stroke={`${C.blue}30`} strokeWidth={1} strokeDasharray="6 4" />
+    <div>
+      {/* Title bar */}
+      <div style={{ background: C.navy, borderRadius: "10px 10px 0 0", padding: "10px 16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ color: C.white, fontSize: 13, fontWeight: 700 }}>🏙️ Integrated Heritage Community — 15-Minute Township Plan</div>
+        <div style={{ fontSize: 11, color: "#7AABBF" }}>Click any zone for details</div>
+      </div>
+
+      {/* MAP SVG */}
+      <svg width="100%" viewBox="0 0 800 520" style={{ display: "block", background: "#BFC8D8" }}>
+
+        {/* ── ZONE BLOCKS ── */}
+
+        {/* TRANSPORT HUB — top left */}
+        <rect x={4} y={4} width={140} height={108} rx={5} fill={zfill("transport")} style={{ cursor: "pointer" }} onClick={() => toggle("transport")} />
+        {/* Station platform */}
+        <rect x={14} y={56} width={120} height={18} rx={3} fill="#FFFFFF" opacity={0.25} />
+        <rect x={14} y={20} width={55} height={30} rx={3} fill="#FFFFFF" opacity={0.2} />
+        <rect x={76} y={20} width={58} height={30} rx={3} fill="#FFFFFF" opacity={0.2} />
+        {/* Track lines */}
+        <line x1={14} y1={78} x2={134} y2={78} stroke="#FFFFFF" strokeWidth={2} opacity={0.4} strokeDasharray="8 4" />
+        <line x1={14} y1={84} x2={134} y2={84} stroke="#FFFFFF" strokeWidth={2} opacity={0.4} strokeDasharray="8 4" />
+
+        {/* EDUCATION — top center-left */}
+        <rect x={148} y={4} width={216} height={108} rx={5} fill={zfill("education")} style={{ cursor: "pointer" }} onClick={() => toggle("education")} />
+        {/* Main school building */}
+        <rect x={158} y={12} width={196} height={52} rx={4} fill="#FFFFFF" opacity={0.22} />
+        {/* Classroom windows */}
+        {[0,1,2,3,4,5].map(i => <rect key={i} x={162 + i * 32} y={18} width={22} height={14} rx={2} fill="#FFFFFF" opacity={0.3} />)}
+        {/* Second row: smaller buildings */}
+        <rect x={158} y={70} width={90} height={34} rx={3} fill="#FFFFFF" opacity={0.18} />
+        <rect x={256} y={70} width={98} height={34} rx={3} fill="#FFFFFF" opacity={0.18} />
+
+        {/* EDUCATION — top center-right */}
+        <rect x={368} y={4} width={184} height={108} rx={5} fill={zfill("education")} style={{ cursor: "pointer" }} onClick={() => toggle("education")} />
+        <rect x={378} y={12} width={164} height={52} rx={4} fill="#FFFFFF" opacity={0.22} />
+        {[0,1,2,3].map(i => <rect key={i} x={382 + i * 40} y={18} width={30} height={14} rx={2} fill="#FFFFFF" opacity={0.3} />)}
+        <rect x={378} y={70} width={76} height={34} rx={3} fill="#FFFFFF" opacity={0.18} />
+        <rect x={462} y={70} width={80} height={34} rx={3} fill="#FFFFFF" opacity={0.18} />
+
+        {/* GREEN SPACE — top right */}
+        <rect x={556} y={4} width={240} height={108} rx={5} fill={zfill("park")} style={{ cursor: "pointer" }} onClick={() => toggle("park")} />
+        {[[572,16,20],[606,22,16],[638,14,18],[672,24,14],[706,16,18],[738,20,14],[762,14,16],[578,60,14],[614,54,18],[650,62,12],[686,54,16],[720,62,14]].map(([tx,ty,tr],i) => (
+          <circle key={i} cx={tx} cy={ty} r={tr} fill="#FFFFFF" opacity={0.22} />
         ))}
-        {/* Ring labels */}
-        <text x={220 + 170} y={220} fontSize={9} fill={C.muted} textAnchor="start" dy={3}>15-min</text>
-        <text x={220 + 125} y={210} fontSize={9} fill={C.muted} textAnchor="start">10-min</text>
-        <text x={220 + 80} y={212} fontSize={9} fill={C.muted} textAnchor="start">5-min</text>
+        {/* Pond */}
+        <ellipse cx={680} cy={85} rx={40} ry={16} fill="#FFFFFF" opacity={0.2} />
 
-        {/* Connector lines */}
-        {zones.filter(z => !z.isCenter).map((z, i) => {
-          const rad = (z.angle * Math.PI) / 180;
-          const x2 = 220 + z.r * Math.cos(rad);
-          const y2 = 220 + z.r * Math.sin(rad);
-          return (
-            <line key={i} x1={220} y1={220} x2={x2} y2={y2}
-              stroke={z.color} strokeWidth={1.5} strokeDasharray="4 3" opacity={0.5} />
-          );
-        })}
+        {/* EMPLOYMENT — left column */}
+        <rect x={4} y={116} width={140} height={156} rx={5} fill={zfill("employment")} style={{ cursor: "pointer" }} onClick={() => toggle("employment")} />
+        {/* Factory buildings */}
+        {[[10,122,62,44],[80,122,58,44],[10,174,130,24],[10,204,60,32],[78,204,58,32],[10,244,128,22]].map(([bx,by,bw,bh],i) => (
+          <rect key={i} x={bx} y={by} width={bw} height={bh} rx={2} fill="#FFFFFF" opacity={0.18} />
+        ))}
+        {/* Smokestacks */}
+        <rect x={22} y={108} width={8} height={18} rx={2} fill="#FFFFFF" opacity={0.3} />
+        <rect x={36} y={112} width={6} height={14} rx={2} fill="#FFFFFF" opacity={0.3} />
 
-        {/* Zone nodes */}
-        {zones.map((z, i) => {
-          const rad = (z.angle * Math.PI) / 180;
-          const cx = z.isCenter ? 220 : 220 + z.r * Math.cos(rad);
-          const cy = z.isCenter ? 220 : 220 + z.r * Math.sin(rad);
-          const size = z.isCenter ? 56 : 46;
-          const isHov = hovered === z.id;
-          return (
-            <g key={i} style={{ cursor: "pointer" }} onClick={() => setHovered(hovered === z.id ? null : z.id)}>
-              <rect x={cx - size / 2} y={cy - size / 2} width={size} height={size}
-                rx={z.isCenter ? 14 : 10}
-                fill={z.isCenter ? C.navy : isHov ? z.color : C.white}
-                stroke={z.color} strokeWidth={isHov || z.isCenter ? 3 : 2}
-                style={{ filter: isHov ? `drop-shadow(0 4px 10px ${z.color}80)` : "none", transition: "all 0.2s" }} />
-              <text x={cx} y={cy - 6} textAnchor="middle" fontSize={z.isCenter ? 20 : 17}>{z.emoji}</text>
-              <text x={cx} y={cy + 9} textAnchor="middle" fontSize={z.isCenter ? 8 : 7.5} fontWeight={700}
-                fill={z.isCenter ? C.white : z.color}>{z.label}</text>
-              {!z.isCenter && (
-                <text x={cx} y={cy + 19} textAnchor="middle" fontSize={7} fill={C.muted}>{z.sub}</text>
-              )}
-            </g>
-          );
-        })}
+        <rect x={4} y={276} width={140} height={120} rx={5} fill={zfill("employment")} style={{ cursor: "pointer" }} onClick={() => toggle("employment")} />
+        {[[10,282,60,36],[78,282,58,36],[10,326,62,30],[80,326,58,30],[10,362,128,28]].map(([bx,by,bw,bh],i) => (
+          <rect key={i} x={bx} y={by} width={bw} height={bh} rx={2} fill="#FFFFFF" opacity={0.18} />
+        ))}
+
+        {/* RESIDENTIAL BLOCKS — NW quadrant (with sub-streets) */}
+        <rect x={148} y={116} width={216} height={156} rx={5} fill={zfill("residential")} style={{ cursor: "pointer" }} onClick={() => toggle("residential")} />
+        {/* Sub-streets inside */}
+        <rect x={148} y={194} width={216} height={6} fill="#BFC8D8" />
+        <rect x={258} y={116} width={6} height={156} fill="#BFC8D8" />
+        {/* 4 sub-blocks with apartment buildings */}
+        {bldgs(152, 120, 100, 68, 3, 3).map((b,i) => <rect key={`rnw1-${i}`} x={b.x} y={b.y} width={b.w} height={b.h} rx={2} fill="#FFFFFF" opacity={0.2} />)}
+        {bldgs(268, 120, 92, 68, 3, 3).map((b,i) => <rect key={`rnw2-${i}`} x={b.x} y={b.y} width={b.w} height={b.h} rx={2} fill="#FFFFFF" opacity={0.2} />)}
+        {bldgs(152, 204, 100, 62, 3, 2).map((b,i) => <rect key={`rnw3-${i}`} x={b.x} y={b.y} width={b.w} height={b.h} rx={2} fill="#FFFFFF" opacity={0.2} />)}
+        {bldgs(268, 204, 92, 62, 3, 2).map((b,i) => <rect key={`rnw4-${i}`} x={b.x} y={b.y} width={b.w} height={b.h} rx={2} fill="#FFFFFF" opacity={0.2} />)}
+
+        {/* RESIDENTIAL + COMMUNITY CENTER — NE quadrant */}
+        <rect x={368} y={116} width={184} height={156} rx={5} fill={zfill("residential")} style={{ cursor: "pointer" }} onClick={() => toggle("residential")} />
+        <rect x={368} y={194} width={184} height={6} fill="#BFC8D8" />
+        <rect x={460} y={116} width={6} height={156} fill="#BFC8D8" />
+        {bldgs(372, 120, 82, 68, 2, 3).map((b,i) => <rect key={`rne1-${i}`} x={b.x} y={b.y} width={b.w} height={b.h} rx={2} fill="#FFFFFF" opacity={0.2} />)}
+        {bldgs(470, 120, 78, 68, 2, 3).map((b,i) => <rect key={`rne2-${i}`} x={b.x} y={b.y} width={b.w} height={b.h} rx={2} fill="#FFFFFF" opacity={0.2} />)}
+        {bldgs(372, 204, 82, 62, 2, 2).map((b,i) => <rect key={`rne3-${i}`} x={b.x} y={b.y} width={b.w} height={b.h} rx={2} fill="#FFFFFF" opacity={0.2} />)}
+        {bldgs(470, 204, 78, 62, 2, 2).map((b,i) => <rect key={`rne4-${i}`} x={b.x} y={b.y} width={b.w} height={b.h} rx={2} fill="#FFFFFF" opacity={0.2} />)}
+        {/* Community Center overlay (over the sub-streets intersection) */}
+        <rect x={400} y={144} width={108} height={76} rx={8}
+          fill={activeZone === "center" ? zoneInfo.center.color : `${zoneInfo.center.color}F0`}
+          stroke="#FFFFFF" strokeWidth={2.5} style={{ cursor: "pointer" }}
+          onClick={(e) => { e.stopPropagation(); toggle("center"); }} />
+        <circle cx={454} cy={182} r={22} fill="#FFFFFF" opacity={0.12} />
+        <circle cx={454} cy={182} r={12} fill="#FFFFFF" opacity={0.18} />
+        <circle cx={454} cy={182} r={5} fill="#FFFFFF" opacity={0.35} />
+
+        {/* COMMERCIAL — right column */}
+        <rect x={556} y={116} width={240} height={156} rx={5} fill={zfill("commercial")} style={{ cursor: "pointer" }} onClick={() => toggle("commercial")} />
+        {[0,1,2].map(row => [0,1,2,3].map(col => (
+          <rect key={`ct-${row}-${col}`} x={562 + col*58} y={122 + row*48} width={50} height={38} rx={3} fill="#FFFFFF" opacity={0.2} />
+        )))}
+        {/* Market canopy */}
+        <rect x={562} y={214} width={228} height={52} rx={3} fill="#FFFFFF" opacity={0.15} />
+        {[0,1,2,3,4,5].map(i => <line key={i} x1={562 + i*40} y1={214} x2={562 + i*40} y2={266} stroke="#FFFFFF" strokeWidth={1.5} opacity={0.3} />)}
+
+        <rect x={556} y={276} width={240} height={120} rx={5} fill={zfill("commercial")} style={{ cursor: "pointer" }} onClick={() => toggle("commercial")} />
+        {[0,1,2].map(row => [0,1,2,3].map(col => (
+          <rect key={`cb-${row}-${col}`} x={562 + col*58} y={282 + row*36} width={50} height={28} rx={3} fill="#FFFFFF" opacity={0.2} />
+        )))}
+
+        {/* RESIDENTIAL — SW quadrant */}
+        <rect x={148} y={276} width={216} height={120} rx={5} fill={zfill("residential")} style={{ cursor: "pointer" }} onClick={() => toggle("residential")} />
+        <rect x={258} y={276} width={6} height={120} fill="#BFC8D8" />
+        <rect x={148} y={336} width={216} height={6} fill="#BFC8D8" />
+        {bldgs(152, 280, 100, 50, 3, 2).map((b,i) => <rect key={`rsw1-${i}`} x={b.x} y={b.y} width={b.w} height={b.h} rx={2} fill="#FFFFFF" opacity={0.2} />)}
+        {bldgs(268, 280, 92, 50, 3, 2).map((b,i) => <rect key={`rsw2-${i}`} x={b.x} y={b.y} width={b.w} height={b.h} rx={2} fill="#FFFFFF" opacity={0.2} />)}
+        {bldgs(152, 346, 100, 44, 3, 2).map((b,i) => <rect key={`rsw3-${i}`} x={b.x} y={b.y} width={b.w} height={b.h} rx={2} fill="#FFFFFF" opacity={0.2} />)}
+        {bldgs(268, 346, 92, 44, 3, 2).map((b,i) => <rect key={`rsw4-${i}`} x={b.x} y={b.y} width={b.w} height={b.h} rx={2} fill="#FFFFFF" opacity={0.2} />)}
+
+        {/* RESIDENTIAL — SE quadrant */}
+        <rect x={368} y={276} width={184} height={120} rx={5} fill={zfill("residential")} style={{ cursor: "pointer" }} onClick={() => toggle("residential")} />
+        <rect x={460} y={276} width={6} height={120} fill="#BFC8D8" />
+        <rect x={368} y={336} width={184} height={6} fill="#BFC8D8" />
+        {bldgs(372, 280, 82, 50, 2, 2).map((b,i) => <rect key={`rse1-${i}`} x={b.x} y={b.y} width={b.w} height={b.h} rx={2} fill="#FFFFFF" opacity={0.2} />)}
+        {bldgs(470, 280, 78, 50, 2, 2).map((b,i) => <rect key={`rse2-${i}`} x={b.x} y={b.y} width={b.w} height={b.h} rx={2} fill="#FFFFFF" opacity={0.2} />)}
+        {bldgs(372, 346, 82, 44, 2, 2).map((b,i) => <rect key={`rse3-${i}`} x={b.x} y={b.y} width={b.w} height={b.h} rx={2} fill="#FFFFFF" opacity={0.2} />)}
+        {bldgs(470, 346, 78, 44, 2, 2).map((b,i) => <rect key={`rse4-${i}`} x={b.x} y={b.y} width={b.w} height={b.h} rx={2} fill="#FFFFFF" opacity={0.2} />)}
+
+        {/* GREEN SW */}
+        <rect x={4} y={400} width={140} height={116} rx={5} fill={zfill("park")} style={{ cursor: "pointer" }} onClick={() => toggle("park")} />
+        {[[16,414,16],[44,424,12],[72,410,18],[96,428,11],[118,416,14],[130,432,10]].map(([tx,ty,tr],i) => (
+          <circle key={i} cx={tx} cy={ty} r={tr} fill="#FFFFFF" opacity={0.22} />
+        ))}
+        <ellipse cx={74} cy={476} rx={36} ry={14} fill="#FFFFFF" opacity={0.18} />
+
+        {/* HEALTH ZONE — bottom center */}
+        <rect x={148} y={400} width={404} height={116} rx={5} fill={zfill("health")} style={{ cursor: "pointer" }} onClick={() => toggle("health")} />
+        {/* RHU main building */}
+        <rect x={380} y={412} width={130} height={90} rx={5} fill="#FFFFFF" opacity={0.2} />
+        {/* BHS small buildings */}
+        <rect x={158} y={412} width={80} height={50} rx={4} fill="#FFFFFF" opacity={0.2} />
+        <rect x={246} y={412} width={80} height={50} rx={4} fill="#FFFFFF" opacity={0.2} />
+        <rect x={332} y={412} width={40} height={50} rx={4} fill="#FFFFFF" opacity={0.2} />
+        {/* Health crosses */}
+        {[200, 288].map(hx => (
+          <g key={hx}>
+            <rect x={hx-3} y={424} width={6} height={20} rx={1} fill="#FFFFFF" opacity={0.55} />
+            <rect x={hx-10} y={431} width={20} height={6} rx={1} fill="#FFFFFF" opacity={0.55} />
+          </g>
+        ))}
+        {/* RHU cross */}
+        <rect x={441} y={428} width={8} height={26} rx={1} fill="#FFFFFF" opacity={0.5} />
+        <rect x={429} y={437} width={32} height={8} rx={1} fill="#FFFFFF" opacity={0.5} />
+        {/* Feeding area */}
+        <rect x={158} y={468} width={212} height={40} rx={4} fill="#FFFFFF" opacity={0.15} />
+
+        {/* GREEN SE */}
+        <rect x={556} y={400} width={240} height={116} rx={5} fill={zfill("park")} style={{ cursor: "pointer" }} onClick={() => toggle("park")} />
+        {[[568,414,14],[596,422,18],[628,412,16],[660,426,12],[690,414,18],[720,422,14],[752,412,16],[574,470,12],[612,464,16],[648,472,10],[684,466,14],[718,474,12],[750,464,16]].map(([tx,ty,tr],i) => (
+          <circle key={i} cx={tx} cy={ty} r={tr} fill="#FFFFFF" opacity={0.22} />
+        ))}
+
+        {/* ── WALKING RADIUS RINGS (drawn OVER blocks, semi-transparent) ── */}
+        <circle cx={CX} cy={CY} r={228} fill="none" stroke="#C0392B" strokeWidth={2} strokeDasharray="10 6" opacity={0.65} />
+        <circle cx={CX} cy={CY} r={152} fill="none" stroke="#D4A017" strokeWidth={2} strokeDasharray="8 5" opacity={0.7} />
+        <circle cx={CX} cy={CY} r={76}  fill="none" stroke="#0D7A8A" strokeWidth={2} strokeDasharray="6 4" opacity={0.8} />
+        {/* Ring labels on right side */}
+        <text x={CX + 228 - 3} y={CY - 8} fontSize={8.5} fill="#C0392B" textAnchor="end" fontWeight={700}>15-min (~1.25 km)</text>
+        <text x={CX + 152 - 3} y={CY - 6} fontSize={8.5} fill="#D4A017" textAnchor="end" fontWeight={700}>10-min (~830 m)</text>
+        <text x={CX + 76 - 3}  y={CY - 5} fontSize={8.5} fill="#0D7A8A" textAnchor="end" fontWeight={700}>5-min (~415 m)</text>
+
+        {/* ── CENTER MARKER ── */}
+        <circle cx={CX} cy={CY} r={9} fill={C.navy} />
+        <circle cx={CX} cy={CY} r={4} fill="#FFFFFF" />
+
+        {/* ── ZONE LABELS (drawn last, always on top) ── */}
+        {[
+          { x: 74,  y: 54,  lines: ["🚊 Transport", "Hub"], color: "#FFFFFF" },
+          { x: 256, y: 50,  lines: ["🎓 Education Zone"], color: "#FFFFFF" },
+          { x: 460, y: 50,  lines: ["🎓 Education Zone"], color: "#FFFFFF" },
+          { x: 676, y: 52,  lines: ["🌳 Green Spaces"], color: "#FFFFFF" },
+          { x: 74,  y: 196, lines: ["🏭 Employment", "Zone"], color: "#FFFFFF" },
+          { x: 256, y: 196, lines: ["🏘️ Residential"], color: "#FFFFFF" },
+          { x: 454, y: 182, lines: ["🏛️ Community", "Center"], color: "#FFFFFF" },
+          { x: 676, y: 196, lines: ["🏪 Commercial", "& Market"], color: "#FFFFFF" },
+          { x: 74,  y: 336, lines: ["🏭 Employment"], color: "#FFFFFF" },
+          { x: 256, y: 336, lines: ["🏘️ Residential"], color: "#FFFFFF" },
+          { x: 460, y: 336, lines: ["🏘️ Residential"], color: "#FFFFFF" },
+          { x: 676, y: 336, lines: ["🏪 Commercial"], color: "#FFFFFF" },
+          { x: 74,  y: 457, lines: ["🌳 Park"], color: "#FFFFFF" },
+          { x: 350, y: 455, lines: ["🏥 Health & Wellness Zone"], color: "#FFFFFF" },
+          { x: 676, y: 457, lines: ["🌳 Park"], color: "#FFFFFF" },
+        ].map((lbl, i) => (
+          <text key={i} x={lbl.x} y={lbl.y} fontSize={8.5} fill={lbl.color}
+            textAnchor="middle" fontWeight={700} opacity={0.95} style={{ pointerEvents: "none" }}>
+            {lbl.lines.map((line, li) => <tspan key={li} x={lbl.x} dy={li === 0 ? 0 : 11}>{line}</tspan>)}
+          </text>
+        ))}
+
+        {/* ── COMPASS ── */}
+        <g transform="translate(769, 32)">
+          <circle cx={0} cy={0} r={18} fill="#FFFFFF" opacity={0.88} />
+          <polygon points="0,-13 -4,-3 4,-3" fill={C.red} />
+          <polygon points="0,13 -4,3 4,3" fill={C.muted} />
+          <line x1={-13} y1={0} x2={13} y2={0} stroke={C.muted} strokeWidth={1.2} />
+          <text x={0} y={-3} fontSize={8} textAnchor="middle" fontWeight={900} fill={C.red}>N</text>
+          <text x={0} y={20} fontSize={7} textAnchor="middle" fill={C.muted}>S</text>
+        </g>
       </svg>
 
-      {/* Info panel */}
-      <div style={{
-        background: hovered ? `${zones.find(z => z.id === hovered)?.color}10` : C.lightGray,
-        border: `1px solid ${hovered ? zones.find(z => z.id === hovered)?.color + "40" : "#E2EBF8"}`,
-        borderRadius: 12, padding: "14px 20px", width: "100%", minHeight: 64, transition: "all 0.25s"
-      }}>
-        {hovered ? (
-          <>
-            <div style={{ fontWeight: 700, fontSize: 13.5, color: zones.find(z => z.id === hovered)?.color, marginBottom: 4 }}>
-              {zones.find(z => z.id === hovered)?.emoji} {zones.find(z => z.id === hovered)?.label}
-            </div>
-            <div style={{ fontSize: 12.5, color: C.text, lineHeight: 1.6 }}>{info[hovered]}</div>
-          </>
-        ) : (
-          <div style={{ fontSize: 12.5, color: C.muted, textAlign: "center", paddingTop: 8 }}>
-            👆 Click any zone to learn more about what's included
+      {/* LEGEND */}
+      <div style={{ background: C.lightGray, borderRadius: "0 0 10px 10px", padding: "12px 16px", display: "flex", flexWrap: "wrap", gap: 7, justifyContent: "center", borderTop: `2px solid ${C.navy}22` }}>
+        {Object.entries(zoneInfo).map(([key, z]) => (
+          <div key={key} onClick={() => toggle(key)} style={{
+            display: "flex", alignItems: "center", gap: 5, padding: "4px 11px", borderRadius: 20,
+            cursor: "pointer", background: activeZone === key ? `${z.color}22` : C.white,
+            border: `1.5px solid ${activeZone === key ? z.color : "#D1D9E6"}`,
+            fontSize: 11.5, color: activeZone === key ? z.color : C.text,
+            fontWeight: activeZone === key ? 700 : 500, transition: "all 0.18s",
+          }}>
+            <div style={{ width: 9, height: 9, borderRadius: 2, background: z.color, flexShrink: 0 }} />
+            {z.icon} {z.label}
           </div>
-        )}
+        ))}
       </div>
+
+      {/* ZONE DETAIL PANEL */}
+      {activeZone && (
+        <div style={{
+          marginTop: 12, borderRadius: 10, padding: "16px 20px",
+          background: `${zoneInfo[activeZone].color}0D`,
+          border: `1.5px solid ${zoneInfo[activeZone].color}50`,
+        }}>
+          <div style={{ fontWeight: 700, fontSize: 14, color: zoneInfo[activeZone].color, marginBottom: 6 }}>
+            {zoneInfo[activeZone].icon} {zoneInfo[activeZone].label}
+          </div>
+          <div style={{ fontSize: 13, color: C.text, lineHeight: 1.75 }}>{zoneInfo[activeZone].desc}</div>
+        </div>
+      )}
     </div>
   );
 };
@@ -350,8 +549,8 @@ const AgencyCards = () => {
     },
     {
       name: "NHA", role: "Public Rental Developer", color: C.blue, emoji: "🏢",
-      targets: ["15,000 public rental units by 2028", "Rent: ₱1,500–₱3,500/month", "50,000 old units retrofitted"],
-      desc: "Builds and manages public rental housing for the poorest families who cannot access any mortgage — no debt burden, no risk of eviction."
+      targets: ["15,000 public rental units by 2028", "Rent: ₱1,500–₱3,500/month", "50,000 old units retrofitted", "Zero ghost towns / 100% occupancy"],
+      desc: "Builds and manages public rental housing for the poorest families — no debt burden, no foreclosure risk. Adopts a construction-first approach modelled on Singapore HDB's Shorter Waiting Time (SWT) framework: construction commences on brownfield sites before beneficiary allocation is finalised, compressing the waiting period from 4–5 years to under 3 years."
     },
     {
       name: "SHFC", role: "Community Financing", color: C.teal, emoji: "👥",
@@ -415,24 +614,24 @@ const FAQ = () => {
   const [open, setOpen] = useState(null);
   const faqs = [
     {
-      q: "Isn't renting just throwing money away? Why not let families own?",
-      a: "For the poorest 30%, rental is safer than ownership that leads to default and eviction. Consider Maria (₱12K/month): with ownership she pays ₱4,800/month, struggles, defaults, and loses everything. With NHA rental at ₱2,000/month, she builds savings, invests in children's education, and has security without crushing debt. Homeownership is great — when families can actually afford it."
+      q: "\"Isn't renting just throwing money away?\"",
+      a: "For families below the affordability threshold, the question is not homeownership versus renting — it is stable shelter versus no shelter. A domestic worker earning ₱12,000/month who enters a ₱1.5M mortgage at subsidised rates pays ₱4,800/month — 40% of income. Studies show this household will default within 2–3 years, lose everything, and return to an informal settlement. The same household paying ₱2,000/month in NHA rental — 17% of income — retains enough disposable income to keep children in school and accumulate savings. Rental is not a failure. It is a calibrated response to income realities that the current program ignores."
     },
     {
-      q: "If govt keeps the land, aren't families just tenants forever?",
-      a: "No. Families get: a 50-year legal right to occupy (renewable), ownership of the house structure (can renovate freely), right to pass to children, protection from arbitrary eviction, and ability to sell — at capped prices to another qualified family. Singapore has used 99-year leasehold since the 1960s. Result: 89% homeownership rate, 80% in public housing. Affordability and security co-exist."
+      q: "\"If the government keeps the land, are families just tenants forever?\"",
+      a: "Under a 50-year usufructuary agreement, families own the house structure outright. They may renovate, improve, and pass the right to their children. The legal right to occupy is secure for 50 years, enforceable in court, and renewable. Singapore's HDB program runs on a 99-year leasehold and achieves a homeownership rate of 89%. Singaporean families have built substantial wealth in their HDB flats over decades. When half of government socialized housing is sold to middle-class buyers within 5 years of turnover, the question of whether full title actually serves the intended families answers itself."
     },
     {
-      q: "Why build in the provinces? The jobs are in Metro Manila.",
-      a: "This is circular reasoning that traps us. Government builds only in Manila → all jobs go to Manila → land becomes expensive → housing unaffordable → cycle repeats. CALABARZON already has 16.39 million people — more than Metro Manila's 14 million — because industries moved there when Manila got too expensive. The Blueprint breaks this cycle by building townships WITH industrial zones, creating jobs WHERE people live."
+      q: "\"Why build in the provinces? The jobs are in Metro Manila.\"",
+      a: "Jobs are in Metro Manila because housing policy has, for decades, concentrated development — and therefore workers — there. CALABARZON has 16.39 million residents, more than Metro Manila's 14 million, because industries followed affordable land, and workers followed industries. The provincial township program builds opportunities where land is affordable, through mandatory employment zones, transport connectivity, and industrial park co-location. The combined housing-plus-transport cost target of below 45% of family income is achievable only outside Metro Manila, where land costs do not absorb 40–60% of total unit cost."
     },
     {
-      q: "How do we prevent ghost towns like previous projects?",
-      a: "Old projects failed because they violated basic rules: built 80–100km from jobs with no transport. This Blueprint requires: (1) 1,000+ jobs within 30 minutes before any approval; (2) connection to existing rail/bus routes; (3) school mandatory; (4) minimum 95% occupancy tracked; (5) 10 pilot townships in 2026 before national scaling. Hong Kong, Japan, Singapore have all proven transit-oriented housing works."
+      q: "\"How do we prevent these from becoming ghost towns?\"",
+      a: "Previous resettlement projects became ghost towns because they were built 80–100 kilometres from employment, with no transport, schools, or markets. This Blueprint prevents that outcome through structural conditions, not aspirations. No township is approved without confirmed employment access, transport connection, school provision, and health facility. The Integrated Heritage Community model adds a further layer: active livelihood, education, and health programs pre-deployed at the moment of occupancy, not two years later. Occupancy is tracked continuously. The global evidence is unambiguous: transit-oriented developments in Hong Kong, Japan, and Singapore sustain 95% or higher occupancy because they are built around the principle that families cannot live where they cannot earn."
     },
     {
-      q: "Where does the ₱250–300 billion actually come from?",
-      a: "60% = Provident Fund's own assets (₱1.23T total). Uses member contributions (₱80–100B/yr), investment income (₱9.43B/yr), loan repayments (₱40–50B/yr). 30% = NHMFC issues mortgage-backed bonds to pension funds and insurance companies — private capital, not government. 10% = Government budget (GAA), the only part needing Congress. Bottom line: 90% bypasses congressional approval entirely."
+      q: "\"Where does ₱250–300 billion actually come from?\"",
+      a: "Sixty percent comes from the Provident Fund's own internal capital: member contributions (₱80–100B/yr), investment income (₱9.43B), and loan repayments (₱40–50B/yr) cycling continuously — the workers' own money, requiring no government budget appropriation. Thirty percent comes from institutional investors purchasing mortgage-backed securities issued by NHMFC — private capital financing public housing. Ten percent comes from the government budget, targeted exclusively to families who cannot access any credit and to township infrastructure. This is the only tranche requiring government subsidy approval. The remaining 90 percent is already there. It is simply not being used effectively."
     },
   ];
 
@@ -473,49 +672,17 @@ export default function DHSUDBlueprint() {
         <div style={{ position: "absolute", bottom: -40, left: 80, width: 180, height: 180, borderRadius: "50%", background: `${C.gold}10` }} />
         <div style={{ position: "absolute", top: 30, right: 120, width: 100, height: 100, borderRadius: "50%", background: `${C.teal}15` }} />
 
-        <div style={{ maxWidth: 1400, margin: "0 auto", padding: "40px 24px 0" }}>
-          {/* DHSUD Logo Row */}
-          <div style={{ display: "flex", alignItems: "center", gap: 18, marginBottom: 28 }}>
-            {/* Logo mark */}
-            <div style={{ position: "relative", flexShrink: 0 }}>
-              <div style={{ width: 72, height: 72, borderRadius: 16, background: C.gold, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 20px rgba(212,160,23,0.5)" }}>
-                <svg viewBox="0 0 48 48" width={44} height={44}>
-                  {/* House shape */}
-                  <polygon points="24,4 44,18 44,44 4,44 4,18" fill="none" stroke={C.navy} strokeWidth={3} strokeLinejoin="round" />
-                  <polygon points="24,4 44,18 4,18" fill={C.navy} opacity={0.7} />
-                  {/* Door */}
-                  <rect x={19} y={30} width={10} height={14} rx={2} fill={C.navy} />
-                  {/* Windows */}
-                  <rect x={10} y={26} width={8} height={7} rx={1.5} fill={C.navy} opacity={0.7} />
-                  <rect x={30} y={26} width={8} height={7} rx={1.5} fill={C.navy} opacity={0.7} />
-                  {/* Sun/star */}
-                  <circle cx={24} cy={14} r={2.5} fill={C.gold} />
-                </svg>
-              </div>
-            </div>
-            <div>
-              <div style={{ fontSize: 10, letterSpacing: 2.5, textTransform: "uppercase", color: "#85B4D9", fontWeight: 600, marginBottom: 4 }}>
-                Republic of the Philippines
-              </div>
-              <div style={{ fontSize: 14, fontWeight: 800, color: C.white, letterSpacing: 0.5 }}>
-                Department of Human Settlements and Urban Development
-              </div>
-              <div style={{ fontSize: 11, color: "#7AB3D9", marginTop: 2 }}>
-                DHSUD · Building Communities, Transforming Lives
-              </div>
-            </div>
-          </div>
-
-          {/* Main title */}
+        <div style={{ maxWidth: 940, margin: "0 auto", padding: "40px 24px 0" }}>
+          {/* Main title only */}
           <div style={{ borderLeft: `5px solid ${C.gold}`, paddingLeft: 20, marginBottom: 20 }}>
-            <div style={{ fontSize: 11, letterSpacing: 3, textTransform: "uppercase", color: C.gold, fontWeight: 700, marginBottom: 8 }}>
-              Holistic Proposal
+            <div style={{ fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: "#85B4D9", fontWeight: 600, marginBottom: 8 }}>
+              Republic of the Philippines · Department of Human Settlements and Urban Development
             </div>
-            <h1 style={{ margin: 0, fontFamily: "'Playfair Display', Georgia, serif", fontSize: 36, color: C.white, fontWeight: 800, lineHeight: 1.15 }}>
-              DHSUD Blueprint<br />2026–2028
+            <h1 style={{ margin: 0, fontFamily: "'Playfair Display', Georgia, serif", fontSize: 38, color: C.white, fontWeight: 800, lineHeight: 1.15 }}>
+              Housing Sector Blueprint<br />for 2026–2028
             </h1>
-            <p style={{ margin: "12px 0 0", fontSize: 16, color: "#A8CDE8", fontStyle: "italic", fontFamily: "Georgia, serif" }}>
-              Breaking the Cycle: A New Housing Framework for the Philippines
+            <p style={{ margin: "10px 0 0", fontSize: 13, color: "#85B4D9", fontWeight: 600, letterSpacing: 1, textTransform: "uppercase" }}>
+              March 2026
             </p>
           </div>
 
@@ -525,7 +692,7 @@ export default function DHSUDBlueprint() {
               { v: "6.5M", l: "Families without\nadequate housing" },
               { v: "82.6%", l: "Cannot afford\nmarket housing" },
               { v: "₱250B+", l: "Capital mobilized\nwithout Congress" },
-              { v: "40K/yr", l: "Target units by\n2028" },
+              { v: "57,000", l: "Total units targeted\n2026–2028 (3 yrs)" },
             ].map((s, i) => (
               <div key={i} style={{ padding: "18px 16px", background: `rgba(255,255,255,${i % 2 === 0 ? 0.06 : 0.09})`, textAlign: "center" }}>
                 <div style={{ fontFamily: "Georgia, serif", fontSize: 26, fontWeight: 800, color: i === 0 ? C.crimson : i === 3 ? C.gold : C.sky }}>{s.v}</div>
@@ -534,8 +701,9 @@ export default function DHSUDBlueprint() {
             ))}
           </div>
         </div>
+
         {/* Nav Tabs */}
-        <div style={{ maxWidth: 1400, margin: "0 auto", padding: "20px 24px 0", display: "flex", gap: 4, overflowX: "auto" }}>
+        <div style={{ maxWidth: 940, margin: "0 auto", padding: "20px 24px 0", display: "flex", gap: 4, overflowX: "auto" }}>
           {TABS.map((t, i) => (
             <button key={i} onClick={() => setTab(i)} style={{
               padding: "10px 18px", borderRadius: "10px 10px 0 0", border: "none", cursor: "pointer",
@@ -575,7 +743,7 @@ export default function DHSUDBlueprint() {
                 {[
                   { n: "01", title: "50-Year Usufructuary Agreement", desc: "Govt keeps the land. Families own the house. Payments drop from ₱4,824 to ₱2,254/month. Anti-speculation rules prevent flipping.", color: C.navy, icon: "🏠" },
                   { n: "02", title: "Self-Sustaining Financing", desc: "60% from Provident Fund assets. 30% from mortgage-backed bonds sold to private investors. Only 10% from government budget.", color: C.teal, icon: "💼" },
-                  { n: "03", title: "Integrated Township Development", desc: "Jobs, schools, clinics, markets — all within 15 minutes on foot. No more ghost towns. No more 3-hour commutes.", color: C.blue, icon: "🌆" },
+                  { n: "03", title: "Integrated Township Development Community", desc: "Every township is an Integrated Heritage Community — with jobs, schools, clinics, and markets within 15 minutes on foot. Livelihood, education, health, and cultural identity built in from Day 1 as binding conditions, not afterthoughts.", color: C.blue, icon: "🌆" },
                   { n: "04", title: "LGU Partnership & Land Strategy", desc: "Local governments know their land best. 100× cheaper provincial land + coordinated planning = affordable housing where people actually want to live.", color: C.gold, icon: "🤝" },
                 ].map((s, i) => (
                   <div key={i} style={{ borderRadius: 12, padding: "18px 20px", background: `${s.color}08`, border: `1px solid ${s.color}30` }}>
@@ -875,12 +1043,86 @@ export default function DHSUDBlueprint() {
             </Card>
 
             <Card>
-              <SectionTitle num="9" title="Solution 3: The 15-Minute Township"
-                subtitle="Build complete communities — not isolated houses. Everything a family needs within 15 minutes on foot." />
+              <SectionTitle num="9" title="Solution 3: The Integrated Township Development Community — A 15-Minute Township Model"
+                subtitle="Build complete Integrated Heritage Communities — not isolated houses. Every facility a family needs daily is within 15 minutes on foot, with livelihood, health, education, and cultural programs built in as binding approval conditions." />
               <TownshipIllustration />
               <Insight color={C.teal}>
                 <strong>Poor families spend 15–20% of income on transportation.</strong> Proximity is affordability. Every township must be within 2km of a train station (Metro Manila Subway, NSCR, LRT, MRT). Target: combined housing + transport costs below 45% of family income.
               </Insight>
+            </Card>
+
+            <Card>
+              <SectionTitle num="9b" title="The Policy Framework: Livelihood, Health & Education in Every Township"
+                subtitle="The Integrated Heritage Community model makes active deployment of these programs a binding condition of DHSUD financing access and approval — not a post-occupancy aspiration." />
+              <div style={{ padding: "14px 18px", background: `${C.red}08`, borderLeft: `4px solid ${C.red}`, borderRadius: "0 10px 10px 0", marginBottom: 20, fontSize: 13, color: C.text, lineHeight: 1.65 }}>
+                <strong>A Critical Observation:</strong> The programs below exist on paper. Some are well-funded and operational; others are under-resourced or politically inconsistent. The Integrated Heritage Community model does not simply reference these programs — it makes their active deployment within approved townships a <em>condition of financing access and DHSUD approval</em>. Without that enforcement mechanism, this section is aspirational. With it, it becomes binding.
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+                {[
+                  {
+                    icon: "💼", color: C.navy, title: "Livelihood — DTI & DOLE Programs",
+                    req: "Required Before Certificate of Occupancy:",
+                    items: [
+                      "DTI Shared Service Facility (SSF) node in the employment zone",
+                      "Co-located Negosyo Center (RA 10644) within the commercial area",
+                      "Pre-deployed DOLE Kabuhayan Program & DSWD SLP for all qualifying households",
+                      "DTI Sari-Sari Store Diversification to build distributed retail from Day 1",
+                      "At least one registered cooperative as anchor tenant of the commercial zone",
+                    ],
+                    note: "Policy basis: SSF Program; Negosyo Center Act (RA 10644); BMBE Act (RA 9178); DTI MSME Dev. Plan 2023–2028"
+                  },
+                  {
+                    icon: "🎓", color: C.teal, title: "Education — DepEd & TESDA",
+                    req: "Required Before Township Approval:",
+                    items: [
+                      "DepEd-accredited elementary school within 10 min walk (1,000+ unit townships)",
+                      "Senior High School with TVL tracks aligned to township employment zone industries (3,000+ units)",
+                      "TESDA-accredited skills training centre within commercial or employment zone",
+                      "ALS delivery point in the community centre open to adult residents",
+                      "TVL industry alignment certified jointly by DTI & DepEd",
+                    ],
+                    note: "Policy basis: Joint Delivery Voucher DO 006-2023; MATATAG EPP/TLE; ALS Program DO 021-2019"
+                  },
+                  {
+                    icon: "🏥", color: C.green, title: "Health — DOH & Barangay Health System",
+                    req: "Required from Day of Occupancy:",
+                    items: [
+                      "Functioning Barangay Health Station with min. 1 trained BHW per 20 households",
+                      "Rural Health Unit with full clinical services for townships of 2,000+ units",
+                      "PhilHealth enrollment assistance for all qualifying households upon turnover",
+                      "School-Based Feeding Program activated from the first academic year",
+                      "Mental health & psychosocial support referral pathway within the health station",
+                    ],
+                    note: "Policy basis: UHC Act (RA 11223); BHW Act (RA 7883); SBN-1682/580/68 BHW Reform Bills"
+                  },
+                  {
+                    icon: "🏛️", color: C.gold, title: "Cultural & Industrial Identity — Heritage Dimension",
+                    req: "Built into Every Township Design:",
+                    items: [
+                      "Community centre with cultural function, not merely administrative services",
+                      "Livelihood programs that prioritise and formalise existing community skills (weaving, food, craft)",
+                      "Public spaces reflecting local cultural identity — not erased in name of standardisation",
+                      "Industrial specialisation determined at planning stage in coordination with DTI and LGU",
+                      "Space for traditional agriculture, ceremonies, and indigenous governance where applicable",
+                    ],
+                    note: "Policy basis: RA 9509 (Livelihood & Skills); RA 7607 (Magna Carta of Small Farmers); NCIP if applicable"
+                  },
+                ].map((block, i) => (
+                  <div key={i} style={{ borderRadius: 12, padding: "16px 18px", background: `${block.color}08`, border: `1px solid ${block.color}30` }}>
+                    <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 10 }}>
+                      <span style={{ fontSize: 22 }}>{block.icon}</span>
+                      <div style={{ fontWeight: 800, fontSize: 13, color: block.color }}>{block.title}</div>
+                    </div>
+                    <div style={{ fontSize: 11.5, fontWeight: 700, color: block.color, marginBottom: 8, textTransform: "uppercase", letterSpacing: 0.5 }}>{block.req}</div>
+                    {block.items.map((item, ii) => (
+                      <div key={ii} style={{ display: "flex", gap: 8, marginBottom: 7, fontSize: 12, color: C.text, lineHeight: 1.5 }}>
+                        <span style={{ color: block.color, flexShrink: 0, fontWeight: 700 }}>✓</span>{item}
+                      </div>
+                    ))}
+                    <div style={{ marginTop: 10, fontSize: 10.5, color: C.muted, fontStyle: "italic", borderTop: `1px solid ${block.color}20`, paddingTop: 8 }}>{block.note}</div>
+                  </div>
+                ))}
+              </div>
             </Card>
 
             <Card>
@@ -929,7 +1171,7 @@ export default function DHSUDBlueprint() {
                 {[
                   { agency: "Provident Fund", targets: ["360,000 housing loans (120K/yr)", "72-hour digital approval system", "3% rate for lowest-income borrowers", "Non-performing loans below 5%"], color: C.navy },
                   { agency: "NHMFC", targets: ["₱50B in mortgage-backed securities", "10,000+ mortgages purchased", "Bonds placed with private investors", "Reduce govt housing loan exposure"], color: C.teal },
-                  { agency: "NHA", targets: ["15,000 public rental units built", "₱1,500–₱3,500/month rent range", "50,000 old units retrofitted", "100% occupancy (no ghost towns)"], color: C.midBlue },
+                  { agency: "NHA", targets: ["15,000 public rental units (Metro Manila, Cebu, Davao)", "Rent: ₱1,500–₱3,500/month; zero default burden", "50,000 deteriorating units structurally retrofitted", "Construction-first SWT model; zero ghost towns"], color: C.midBlue },
                   { agency: "SHFC", targets: ["50,000 families with secure tenure", "₱250M in community mortgage loans", "15,000 incremental housing units", "25% of loans to rural areas"], color: C.lightBlue },
                   { agency: "PHILGUARANTEE", targets: ["₱5B in municipal housing bonds", "15 cities enabled to self-finance", "₱10B in developer loan support", "Interest rates from 8% → 4–6%"], color: C.gold },
                   { agency: "DHSUD / HSAC", targets: ["100% cities update land-use plans", "80% permits processed in 30 days", "Zero permit backlog", "100% cases resolved on time"], color: C.green },
@@ -967,7 +1209,7 @@ export default function DHSUDBlueprint() {
                 </BarChart>
               </ResponsiveContainer>
               <Insight color={C.navy}>
-                <strong>Old system:</strong> ₱5.5B budget → 5,000 units/year · <strong>New system:</strong> ₱250B from existing sources → 40,000 units/year by 2028. The difference isn't more money from Congress — it's a smarter system that doesn't depend on Congress.
+                <strong>Old system:</strong> ₱5.56B budget → 5,000–10,000 units/year · <strong>New system:</strong> ₱250–300B from existing sources → 57,000 total units 2026–2028, scaling to 40,000–50,000/year by 2029–2030. The difference isn't more money from Congress — it's a smarter system that doesn't depend on Congress.
               </Insight>
               <Source text="DHSUD internal projections; Provident Fund capacity analysis" />
             </Card>
@@ -978,15 +1220,36 @@ export default function DHSUDBlueprint() {
                 {[
                   {
                     year: "2026", color: C.teal, emoji: "🌱", title: "Build the Foundation",
-                    items: ["Issue usufruct standards and guidelines", "Launch 10 pilot townships nationally", "Provident Fund 72-hr approval system live", "NHMFC issues first ₱10B in bonds", "DHSUD digital permitting platform launched", "All LGUs submit updated land-use plans"]
+                    items: [
+                      "Mar–Apr: Nationwide stakeholder consultation — LGUs, DTI, DOH, DepEd, private sector, communities",
+                      "May: Promulgate implementing rules — usufruct agreements, 15-min standard, IHC policy framework",
+                      "June: Select first 10 pilot LGUs; site validation; DTI/DOH/DepEd co-planning for each site",
+                      "Jul–Sep: Provident Fund 72-hour digital loan system launch; automated income verification",
+                      "Q3: First NHMFC bond issuance — ₱10B target; investor roadshow",
+                      "Q4: Groundbreaking — first 10 pilot townships; NHA rental construction begins; SSF and Negosyo Center sited"
+                    ]
                   },
                   {
                     year: "2027", color: C.blue, emoji: "📈", title: "Scale What Works",
-                    items: ["Expand to 30+ townships based on pilots", "17,500 units delivered", "NHMFC issues ₱20B in bonds", "15 cities self-financing housing", "SHFC reaches 25,000 families", "NHA completes 7,500 rental units"],
+                    items: [
+                      "Scale to 22,000 units/year based on pilot results",
+                      "NHMFC issues ₱20B in bonds (second round)",
+                      "Evaluate pilot township results; replicate proven models",
+                      "BHW deployment nationwide across all approved townships",
+                      "15 cities enabled to self-finance housing via PHILGUARANTEE",
+                      "SHFC reaches 25,000 families with secure tenure",
+                    ],
                   },
                   {
                     year: "2028", color: C.gold, emoji: "🏆", title: "Full System Operation",
-                    items: ["25,000+ units produced annually", "50,000 families with secure tenure", "NHMFC ₱50B total bonds issued", "360,000 total Provident Fund loans", "15,000 NHA rental units completed", "System ready to sustain 40K+/yr by 2029"],
+                    items: [
+                      "Full system at 25,000 units/year; national LGU rollout",
+                      "NHMFC issues ₱20B bond round 3 — ₱50B total over 3 years",
+                      "360,000 total Provident Fund loans delivered",
+                      "15,000 NHA public rental units completed",
+                      "50,000 families with secure tenure under SHFC",
+                      "System ready for sustainable throughput of 40,000–50,000 units/year by 2029–2030; IHC model standardised"
+                    ],
                   },
                 ].map((yr, i) => (
                   <div key={i} style={{ borderRadius: 14, overflow: "hidden", border: `2px solid ${yr.color}30` }}>
@@ -1010,8 +1273,8 @@ export default function DHSUDBlueprint() {
             </Card>
 
             <Card>
-              <SectionTitle num="◉" title="Ghost Town Prevention: Mandatory Requirements"
-                subtitle="Previous projects failed because they were built far from jobs with no services. This Blueprint makes livability mandatory — not optional." />
+              <SectionTitle num="◉" title="Ghost Town Prevention: Mandatory Approval Requirements for Integrated Heritage Communities"
+                subtitle="Previous projects failed because they violated basic rules — built far from jobs with no services. This Blueprint makes livability a binding structural condition, not an aspiration." />
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
                 {[
                   { icon: "💼", title: "Jobs First Rule", desc: "No township gets approved unless 1,000+ jobs exist within 30 minutes of the site. Employment before housing.", color: C.navy },
@@ -1047,7 +1310,7 @@ export default function DHSUDBlueprint() {
               <SectionTitle num="◉" title="Why the Philippines, Why Now?" />
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 14 }}>
                 {[
-                  { title: "Singapore Proof", desc: "Singapore used 99-year leasehold (similar to usufruct) since the 1960s. Today: 89% homeownership, 80% in public housing, one of the world's most stable property markets.", icon: "🇸🇬", color: C.teal },
+                  { title: "Singapore HDB Proof", desc: "Singapore used 99-year leasehold (similar to usufruct) since the 1960s. Today: 89% homeownership, 80% in public housing. Its Shorter Waiting Time (SWT) framework — construction before beneficiary allocation — is the model for NHA's approach under this Blueprint.", icon: "🇸🇬", color: C.teal },
                   { title: "CALABARZON Success", desc: "When industries moved from Metro Manila to CALABARZON, the region grew to 16.4M people — bigger than Metro Manila. Regional growth IS possible and is already happening.", icon: "🌏", color: C.green },
                   { title: "Bahay Bonds Precedent", desc: "NHMFC already issued mortgage-backed 'Bahay Bonds' successfully before. This is not a new concept — this Blueprint scales what already works.", icon: "📋", color: C.blue },
                 ].map((e, i) => (
@@ -1064,13 +1327,13 @@ export default function DHSUDBlueprint() {
               <SectionTitle num="◉" title="The Bottom Line" />
               <div style={{ background: `linear-gradient(135deg, ${C.navy}08 0%, ${C.teal}08 100%)`, borderRadius: 14, padding: "28px 30px", border: `1px solid ${C.navy}20`, textAlign: "center" }}>
                 <div style={{ fontFamily: "Georgia, serif", fontSize: 22, color: C.navy, fontWeight: 700, lineHeight: 1.5, marginBottom: 16 }}>
-                  "This is not about building more units faster.<br />This is about creating a system that actually works for Filipino families."
+                  "This Blueprint is not about building more units faster. It is about creating a system that works permanently for Filipino families — one that remains affordable for the children and grandchildren of the families it first serves, and that does not depend on the goodwill of any single budget cycle to survive."
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20, marginTop: 24 }}>
                   {[
-                    { label: "Monthly savings per family", v: "₱2,570", color: C.green },
-                    { label: "Units by 2028", v: "25,000+/yr", color: C.blue },
-                    { label: "Gov't subsidy needed", v: "₱0", color: C.gold },
+                    { label: "Monthly savings per family (usufruct)", v: "₱2,570", color: C.green },
+                    { label: "Units targeted by 2028 (cumulative)", v: "57,000", color: C.blue },
+                    { label: "Capital from non-govt sources", v: "90%", color: C.gold },
                   ].map((s, i) => (
                     <div key={i} style={{ background: C.white, borderRadius: 12, padding: "16px", boxShadow: "0 2px 10px rgba(0,0,0,0.06)" }}>
                       <div style={{ fontFamily: "Georgia, serif", fontSize: 28, fontWeight: 800, color: s.color }}>{s.v}</div>
@@ -1086,8 +1349,8 @@ export default function DHSUDBlueprint() {
 
       {/* FOOTER */}
       <div style={{ background: C.navy, color: "#7AABBF", textAlign: "center", padding: "20px 24px", fontSize: 12 }}>
-        <div style={{ fontWeight: 700, color: C.white, marginBottom: 4 }}>DHSUD Blueprint 2026–2028 · Holistic Proposal</div>
-        <div>Breaking the Cycle: A New Housing Framework for the Philippines · Prepared March 2026</div>
+        <div style={{ fontWeight: 700, color: C.white, marginBottom: 4 }}>Housing Sector Blueprint for 2026–2028 · Department of Human Settlements and Urban Development</div>
+        <div>Republic of the Philippines · March 2026</div>
         <div style={{ marginTop: 6, fontSize: 11, color: "#5A8FAA" }}>
           Data sources: PSA 2024 Census · BSP RPPI Q3 2025 · DHSUD FY 2026 Budget Briefer · UP CIDS August 2025 · Provident Fund 2025 Annual Report · DBM · Colliers PH · InvestAsian
         </div>
