@@ -559,7 +559,7 @@ const AgencyCards = () => {
     },
     {
       name: "Provident Fund", role: "Primary Lender (60%)", color: C.midBlue, emoji: "💰",
-      targets: ["360,000 housing loans (2026–28)", "72-hour approval system", "3% rate for lowest-income borrowers"],
+      targets: ["360,000 housing loans (2026-28)", "72-hour approval system", "3% rate for lowest-income borrowers"],
       desc: "Uses its ₱1.23T in assets and ₱9.43B investment income to provide affordable loans — no congressional approval needed."
     },
     {
@@ -673,18 +673,15 @@ export default function DHSUDBlueprint() {
         <div style={{ position: "absolute", top: 30, right: 120, width: 100, height: 100, borderRadius: "50%", background: `${C.teal}15` }} />
 
         <div style={{ maxWidth: 940, margin: "0 auto", padding: "40px 24px 0" }}>
-          {/* Main title only */}
-          <div style={{ borderLeft: `5px solid ${C.gold}`, paddingLeft: 20, marginBottom: 20 }}>
-            <div style={{ fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: "#85B4D9", fontWeight: 600, marginBottom: 8 }}>
-              Republic of the Philippines · Department of Human Settlements and Urban Development
-            </div>
-            <h1 style={{ margin: 0, fontFamily: "'Playfair Display', Georgia, serif", fontSize: 38, color: C.white, fontWeight: 800, lineHeight: 1.15 }}>
-              Housing Sector Blueprint<br />for 2026–2028
-            </h1>
-            <p style={{ margin: "10px 0 0", fontSize: 13, color: "#85B4D9", fontWeight: 600, letterSpacing: 1, textTransform: "uppercase" }}>
-              March 2026
-            </p>
-          </div>
+  <div style={{ borderLeft: `5px solid ${C.gold}`, paddingLeft: 20, marginBottom: 20 }}>
+    <h1 style={{ margin: 0, fontFamily: "'Playfair Display', Georgia, serif", fontSize: 38, color: C.white, fontWeight: 800, lineHeight: 1.15 }}>
+      Housing Sector Blueprint<br />for 2026-2028
+    </h1>
+    <p style={{ margin: "10px 0 0", fontSize: 13, color: "#85B4D9", fontWeight: 600, letterSpacing: 1, textTransform: "uppercase" }}>
+      March 2026
+    </p>
+  </div>
+</div>
 
           {/* Key numbers strip */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 1, background: `${C.white}15`, borderRadius: 12, overflow: "hidden", marginBottom: 0 }}>
@@ -692,7 +689,7 @@ export default function DHSUDBlueprint() {
               { v: "6.5M", l: "Families without\nadequate housing" },
               { v: "82.6%", l: "Cannot afford\nmarket housing" },
               { v: "₱250B+", l: "Capital mobilized\nwithout Congress" },
-              { v: "57,000", l: "Total units targeted\n2026–2028 (3 yrs)" },
+              { v: "57,000", l: "Total units targeted\n2026-2028 (3 yrs)" },
             ].map((s, i) => (
               <div key={i} style={{ padding: "18px 16px", background: `rgba(255,255,255,${i % 2 === 0 ? 0.06 : 0.09})`, textAlign: "center" }}>
                 <div style={{ fontFamily: "Georgia, serif", fontSize: 26, fontWeight: 800, color: i === 0 ? C.crimson : i === 3 ? C.gold : C.sky }}>{s.v}</div>
@@ -974,7 +971,7 @@ export default function DHSUDBlueprint() {
                       {financingMix.map((e, i) => <Cell key={i} fill={e.color} />)}
                     </Pie>
                   </PieChart>
-                  <div style={{ fontSize: 11, color: C.muted, marginTop: -8 }}>₱250–300B Total (2026–28)</div>
+                  <div style={{ fontSize: 11, color: C.muted, marginTop: -8 }}>₱250–300B Total (2026-28)</div>
                 </div>
                 <div>
                   {[
@@ -1156,7 +1153,7 @@ export default function DHSUDBlueprint() {
           <>
             <Card>
               <SectionTitle num="◉" title="Seven Agencies, One System"
-                subtitle="Each agency has a specific, non-overlapping role. Click any agency to see its mandate and 2026–2028 targets." />
+                subtitle="Each agency has a specific, non-overlapping role. Click any agency to see its mandate and 2026-2028 targets." />
               <AgencyCards />
             </Card>
 
@@ -1166,7 +1163,7 @@ export default function DHSUDBlueprint() {
             </Card>
 
             <Card>
-              <SectionTitle num="◉" title="Agency Performance Scoreboard (2026–2028 Targets)" />
+              <SectionTitle num="◉" title="Agency Performance Scoreboard (2026-2028 Targets)" />
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
                 {[
                   { agency: "Provident Fund", targets: ["360,000 housing loans (120K/yr)", "72-hour digital approval system", "3% rate for lowest-income borrowers", "Non-performing loans below 5%"], color: C.navy },
@@ -1209,7 +1206,7 @@ export default function DHSUDBlueprint() {
                 </BarChart>
               </ResponsiveContainer>
               <Insight color={C.navy}>
-                <strong>Old system:</strong> ₱5.56B budget → 5,000–10,000 units/year · <strong>New system:</strong> ₱250–300B from existing sources → 57,000 total units 2026–2028, scaling to 40,000–50,000/year by 2029–2030. The difference isn't more money from Congress — it's a smarter system that doesn't depend on Congress.
+                <strong>Old system:</strong> ₱5.56B budget → 5,000–10,000 units/year · <strong>New system:</strong> ₱250–300B from existing sources → 57,000 total units 2026-2028, scaling to 40,000–50,000/year by 2029–2030. The difference isn't more money from Congress — it's a smarter system that doesn't depend on Congress.
               </Insight>
               <Source text="DHSUD internal projections; Provident Fund capacity analysis" />
             </Card>
